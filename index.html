@@ -21,7 +21,125 @@
         </form>
         <p id="message"></p>
     </div>
-    <script src="demo.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const verificationForm = document.getElementById('verification-form');
+    const emailInput = document.getElementById('email');
+    const sendOTPButton = document.getElementById('send-otp');
+    const otpContainer = document.getElementById('otp-container');
+    const otpInput = document.getElementById('otp');
+    const verifyButton = document.getElementById('verify');
+    const message = document.getElementById('message');
+
+    let generatedOTP = null;
+
+    sendOTPButton.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (!emailInput.validity.valid) {
+            message.textContent = 'Please enter a valid email address.';
+            return;
+        }
+
+        if (!generatedOTP) {
+            // Make a POST request to the server to send the OTP
+            fetch('/send-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: emailInput.value }),
+            })
+                .then((response) => response.text())
+                .then((data) => {
+                    if (data === 'OTP sent successfully') {
+                        // OTP sent successfully
+                        generatedOTP = 'sent';
+                        otpContainer.style.display = 'block';
+                    } else {
+                        message.textContent = 'Error sending OTP.';
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    message.textContent = 'Error sending OTP.';
+                });
+        }
+    });
+
+    // Rest of your JavaScript code for OTP verification, same as before
+   
+    document.addEventListener('DOMContentLoaded', function () {
+        const verificationForm = document.getElementById('verification-form');
+        const emailInput = document.getElementById('email');
+        const sendOTPButton = document.getElementById('send-otp');
+        const otpContainer = document.getElementById('otp-container');
+        const otpInput = document.getElementById('otp');
+        const verifyButton = document.getElementById('verify');
+        const message = document.getElementById('message');
+    
+        let generatedOTP = null;
+    
+        sendOTPButton.addEventListener('click', function (e) {
+            e.preventDefault();
+    
+            if (!emailInput.validity.valid) {
+                message.textContent = 'Please enter a valid email address.';
+                return;
+            }
+    
+            if (!generatedOTP) {
+                // Make a POST request to the server to send the OTP
+                fetch('/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: emailInput.value }),
+                })
+                    .then((response) => response.text())
+                    .then((data) => {
+                        if (data === 'OTP sent successfully') {
+                            // OTP sent successfully
+                            generatedOTP = 'sent';
+                            otpContainer.style.display = 'block';
+                        } else {
+                            message.textContent = 'Error sending OTP.';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        message.textContent = 'Error sending OTP.';
+                    });
+            }
+        });
+    
+        verifyButton.addEventListener('click', function (e) {
+            e.preventDefault();
+    
+            if (otpInput.value === '') {
+                message.textContent = 'Please enter the OTP.';
+                return;
+            }
+    
+            if (generatedOTP === 'sent') {
+                message.textContent = 'Please wait for the OTP to arrive.';
+                return;
+            }
+    
+            const enteredOTP = parseInt(otpInput.value);
+    
+            if (enteredOTP === generatedOTP) {
+                message.textContent = 'Email verified successfully!';
+                // You can redirect the user to another page or perform further actions here.
+            } else {
+                message.textContent = 'Invalid OTP. Please try again.';
+            }
+        });
+    });
+    
+    });
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
